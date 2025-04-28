@@ -1,5 +1,10 @@
 <x-layouts.public>
 
+    
+    <div class="flex justify-end mb-4">
+        <span id="hora-sistema" class="text-lg font-semibold text-gray-700"></span>
+    </div>
+
     <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -129,53 +134,16 @@
             </tbody>
         </table>
     </div>
-
-    {{-- <h1>Asistencias de Administrativos</h1>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>IdPersona</th>
-                <th>CodigoTipoHorario</th>
-                <th>CodigoTurno</th>
-                <th>HoraEntrada</th>
-                <th>HoraRegistroEntrada</th>
-                <th>HoraMinimaEntrada</th>
-                <th>HoraMaximaEntrada</th>
-                <th>HoraSalida</th>
-                <th>HoraRegistroSalida</th>
-                <th>HoraMinimaSalida</th>
-                <th>HoraMaximaSalida</th>
-                <th>EstadoEntrada</th>
-                <th>EstadoSalida</th>
-                <th>Sanciones</th>
-                <th>EstadoAsistencia</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($asistencias as $asistencia)
-                <tr>
-                    <td>{{ $asistencia->IdPersona }}</td>
-                    <td>{{ $asistencia->CodigoTipoHorario }}</td>
-                    <td>{{ $asistencia->CodigoTurno }}</td>
-                    <td>{{ $asistencia->HoraEntrada }}</td>
-                    <td>{{ $asistencia->HoraRegistroEntrada }}</td>
-                    <td>{{ $asistencia->HoraMinimaEntrada }}</td>
-                    <td>{{ $asistencia->HoraMaximaEntrada }}</td>
-                    <td>{{ $asistencia->HoraSalida }}</td>
-                    <td>{{ $asistencia->HoraRegistroSalida }}</td>
-                    <td>{{ $asistencia->HoraMinimaSalida }}</td>
-                    <td>{{ $asistencia->HoraMaximaSalida }}</td>
-                    <td>{{ $asistencia->EstadoEntrada }}</td>
-                    <td>{{ $asistencia->EstadoSalida }}</td>
-                    <td>{{ $asistencia->Sanciones }}</td>
-                    <td>{{ $asistencia->EstadoAsistencia }}</td>
-                    <td>{{ $asistencia->Observaciones }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table> --}}
     {{ $asistencias->links() }}
 
 
+    <script>
+        function actualizarHora() {
+            const ahora = new Date();
+            const hora = ahora.toLocaleTimeString('es-ES', { hour12: false });
+            document.getElementById('hora-sistema').textContent = 'Hora del sistema: ' + hora;
+        }
+        setInterval(actualizarHora, 1000);
+        actualizarHora();
+    </script>
 </x-layouts.public>
