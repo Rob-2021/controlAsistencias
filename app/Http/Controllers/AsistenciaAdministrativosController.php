@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AsistenciaAdministrativos;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\AsistenciaAdministrativo;
 
 
 class AsistenciaAdministrativosController extends Controller
@@ -32,7 +33,7 @@ class AsistenciaAdministrativosController extends Controller
         //     ,[Observaciones]
         // FROM [RRHH].[dbo].[AsistenciaAdministrativos]");
 
-        $asistencias = AsistenciaAdministrativos::paginate(15);
+        $asistencias = AsistenciaAdministrativo::orderBy('IdPersona','desc')->paginate(15);
         return view('asistencia.index', compact('asistencias'));
     }
 
@@ -55,7 +56,7 @@ class AsistenciaAdministrativosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AsistenciaAdministrativos $asistenciaAdministrativos)
+    public function show(AsistenciaAdministrativo $asistenciaAdministrativos)
     {
         //return view('AsistenciaAdministrativos.show', compact('asistenciaAdministrativos'));
     }
@@ -63,7 +64,7 @@ class AsistenciaAdministrativosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AsistenciaAdministrativos $asistenciaAdministrativos)
+    public function edit(AsistenciaAdministrativo $asistenciaAdministrativos)
     {
         //
     }
@@ -71,7 +72,7 @@ class AsistenciaAdministrativosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AsistenciaAdministrativos $asistenciaAdministrativos)
+    public function update(Request $request, AsistenciaAdministrativo $asistenciaAdministrativos)
     {
         //
     }
@@ -79,7 +80,7 @@ class AsistenciaAdministrativosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AsistenciaAdministrativos $asistenciaAdministrativos)
+    public function destroy(AsistenciaAdministrativo $asistenciaAdministrativos)
     {
         //
     }
