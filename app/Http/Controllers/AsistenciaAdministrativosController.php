@@ -13,28 +13,41 @@ class AsistenciaAdministrativosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $asistencias = DB::select("SELECT TOP 1000 [IdPersona]
-        //     ,[CodigoTipoHorario]
-        //     ,[CodigoTurno]
-        //     ,[HoraEntrada]
-        //     ,[HoraRegistroEntrada]
-        //     ,[HoraMinimaEntrada]
-        //     ,[HoraMaximaEntrada]
-        //     ,[HoraSalida]
-        //     ,[HoraRegistroSalida]
-        //     ,[HoraMinimaSalida]
-        //     ,[HoraMaximaSalida]
-        //     ,[EstadoEntrada]
-        //     ,[EstadoSalida]
-        //     ,[Sanciones]
-        //     ,[EstadoAsistencia]
-        //     ,[Observaciones]
-        // FROM [RRHH].[dbo].[AsistenciaAdministrativos]");
+        $query = AsistenciaAdministrativo::with('persona')->orderBy('IdPersona', 'desc');
 
-        $asistencias = AsistenciaAdministrativo::orderBy('IdPersona','desc')->paginate(15);
+        if ($request->filled('busqueda')) {
+            $busqueda = $request->input('busqueda');
+            $query->whereHas('persona', function ($q) use ($busqueda) {
+                $q->where('Nombres', 'like', "%$busqueda%")
+                    ->orWhere('Paterno', 'like', "%$busqueda%")
+                    ->orWhere('Materno', 'like', "%$busqueda%");
+            });
+        }
+
+        // Filtro por día exacto
+        if ($request->filled('dia')) {
+            $query->whereDate('HoraEntrada', $request->input('dia'));
+        }
+
+        // Filtro por mes (YYYY-MM)
+        if ($request->filled('mes')) {
+            [$anio, $mes] = explode('-', $request->input('mes'));
+            $query->whereYear('HoraEntrada', $anio)
+                ->whereMonth('HoraEntrada', $mes);
+        }
+
+        // Filtro por año
+        if ($request->filled('anio')) {
+            $query->whereYear('HoraEntrada', $request->input('anio'));
+        }
+
+        $asistencias = $query->paginate(10)->appends($request->all());
         return view('asistencia.index', compact('asistencias'));
+
+        // $asistencias = AsistenciaAdministrativo::orderBy('IdPersona','desc')->paginate(10);
+        // return view('asistencia.index', compact('asistencias'));
     }
 
     /**

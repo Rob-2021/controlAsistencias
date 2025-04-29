@@ -1,7 +1,13 @@
 <x-layouts.public>
 
-    
-    <div class="flex justify-end mb-4">
+    <div class="flex justify-between items-center mb-4">
+        <form method="GET" action="{{ route('asistencia.index') }}" class="flex flex-wrap gap-2">
+            <input type="text" name="busqueda" value="{{ request('busqueda') }}" placeholder="Buscar por nombre..." class="border rounded px-2 py-1">
+            <input type="month" name="mes" value="{{ request('mes') }}" class="border rounded px-2 py-1">
+            <input type="date" name="dia" value="{{ request('dia') }}" class="border rounded px-2 py-1">
+            <input type="number" name="anio" value="{{ request('anio') }}" placeholder="Año" min="2000" max="2100" class="border rounded px-2 py-1" style="width: 90px;">
+            <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Buscar</button>
+        </form>
         <span id="hora-sistema" class="text-lg font-semibold text-gray-700"></span>
     </div>
 
@@ -10,7 +16,7 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        IdPersona
+                        Nombre
                     </th>
                     <th scope="col" class="px-6 py-3">
                         CodigoTipoHorario
@@ -24,24 +30,24 @@
                     <th scope="col" class="px-6 py-3">
                         HoraRegistroEntrada
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    {{-- <th scope="col" class="px-6 py-3">
                         HoraMinimaEntrada
                     </th>
                     <th scope="col" class="px-6 py-3">
                         HoraMaximaEntrada
-                    </th>
+                    </th> --}}
                     <th scope="col" class="px-6 py-3">
                         HoraSalida
                     </th>
                     <th scope="col" class="px-6 py-3">
                         HoraRegistroSalida
-                    </th>
+                    {{-- </th>
                     <th scope="col" class="px-6 py-3">
                         HoraMinimaSalida
                     </th>
                     <th scope="col" class="px-6 py-3">
                         HoraMaximaSalida
-                    </th>
+                    </th> --}}
                     <th scope="col" class="px-6 py-3">
                         EstadoEntrada
                     </th>
@@ -64,7 +70,11 @@
                 @foreach ($asistencias as $asistencia)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{$asistencia->IdPersona}}
+                            @if ($asistencia->persona)
+                                {{ $asistencia->persona->Nombres }}
+                                {{ $asistencia->persona->Paterno }}
+                                {{-- {{ $asistencia->persona->Materno }}  --}}
+                            @endif
                         </th>
                         <th class="px-6 py-4">
                             {{$asistencia->CodigoTipoHorario}}
@@ -78,24 +88,24 @@
                         <th class="px-6 py-4">
                             {{$asistencia->HoraRegistroEntrada}}
                         </th>
-                        <th class="px-6 py-4">
+                        {{-- <th class="px-6 py-4">
                             {{$asistencia->HoraMinimaEntrada}}
                         </th>
                         <th class="px-6 py-4">
                             {{$asistencia->HoraMaximaEntrada}}
-                        </th>
+                        </th> --}}
                         <th class="px-6 py-4">
                             {{$asistencia->HoraSalida}}
                         </th>
                         <th class="px-6 py-4">
                             {{$asistencia->HoraRegistroSalida}}
                         </th>
-                        <th class="px-6 py-4">
+                        {{-- <th class="px-6 py-4">
                             {{$asistencia->HoraMinimaSalida}}
                         </th>
                         <th class="px-6 py-4">
                             {{$asistencia->HoraMaximaSalida}}
-                        </th>
+                        </th> --}}
                         <th class="px-6 py-4">
                             {{$asistencia->EstadoEntrada}}
                         </th>
