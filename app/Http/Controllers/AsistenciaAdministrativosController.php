@@ -11,6 +11,9 @@ use App\Exports\AsistenciasExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
+// ini_set('memory_limit', '1024M');
+// set_time_limit(0);
+
 class AsistenciaAdministrativosController extends Controller
 {
     /**
@@ -103,9 +106,7 @@ public function vistaReporte(Request $request)
         $query->whereYear('HoraEntrada', $anio)
             ->whereMonth('HoraEntrada', $mes);
     }
-    if ($request->filled('anio')) {
-        $query->whereYear('HoraEntrada', $request->input('anio'));
-    }
+
     $asistencias = $query->get();
     return view('asistencia.reporte', compact('asistencias'));
 }

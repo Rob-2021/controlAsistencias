@@ -2,11 +2,12 @@
 namespace App\Exports;
 
 use App\Models\AsistenciaAdministrativo;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Illuminate\Http\Request;
 
-class AsistenciasExport implements FromCollection, WithHeadings
+class AsistenciasExport implements FromQuery, WithHeadings, WithMapping
 {
     protected $request;
 
@@ -15,7 +16,7 @@ class AsistenciasExport implements FromCollection, WithHeadings
         $this->request = $request;
     }
 
-    public function collection()
+    public function query()
     {
         $query = AsistenciaAdministrativo::with('persona')->orderBy('IdPersona', 'desc');
 
@@ -38,26 +39,29 @@ class AsistenciasExport implements FromCollection, WithHeadings
         if ($this->request->filled('anio')) {
             $query->whereYear('HoraEntrada', $this->request->input('anio'));
         }
+        if ($this->request->filled('codigo_turno')) {
+            $query->where('CodigoTurno', $this->request->input('codigo_turno'));
+        }
 
-        $asistencias = $query->get();
+        return $query;
+    }
 
-        // Mapea los datos para el Excel
-        return $asistencias->map(function ($asistencia) {
-            return [
-                'Nombre' => $asistencia->persona ? $asistencia->persona->Nombres . ' ' . $asistencia->persona->Paterno . ' ' . $asistencia->persona->Materno : '',
-                'CodigoTipoHorario' => $asistencia->CodigoTipoHorario,
-                'CodigoTurno' => $asistencia->CodigoTurno,
-                'HoraEntrada' => $asistencia->HoraEntrada,
-                'HoraRegistroEntrada' => $asistencia->HoraRegistroEntrada,
-                'HoraSalida' => $asistencia->HoraSalida,
-                'HoraRegistroSalida' => $asistencia->HoraRegistroSalida,
-                'EstadoEntrada' => $asistencia->EstadoEntrada,
-                'EstadoSalida' => $asistencia->EstadoSalida,
-                'Sanciones' => $asistencia->Sanciones,
-                'EstadoAsistencia' => $asistencia->EstadoAsistencia,
-                'Observaciones' => $asistencia->Observaciones,
-            ];
-        });
+    public function map($asistencia): array
+    {
+        return [
+            $asistencia->persona ? $asistencia->persona->Nombres . ' ' . $asistencia->persona->Paterno . ' ' . $asistencia->persona->Materno : '',
+            $asistencia->CodigoTipoHorario,
+            $asistencia->CodigoTurno,
+            $asistencia->HoraEntrada,
+            $asistencia->HoraRegistroEntrada,
+            $asistencia->HoraSalida,
+            $asistencia->HoraRegistroSalida,
+            $asistencia->EstadoEntrada,
+            $asistencia->EstadoSalida,
+            $asistencia->Sanciones,
+            $asistencia->EstadoAsistencia,
+            $asistencia->Observaciones,
+        ];
     }
 
     public function headings(): array
