@@ -7,6 +7,10 @@
             <input type="date" name="dia" value="{{ request('dia') }}" class="border rounded px-2 py-1">
             <input type="number" name="anio" value="{{ request('anio') }}" placeholder="Año" min="2000" max="2100" class="border rounded px-2 py-1" style="width: 90px;">
             <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Buscar</button>
+
+            <a href="{{ route('asistencia.reporte.vista', request()->all()) }}" target="_blank" class="bg-yellow-600 text-white px-3 py-1 rounded">Vista previa PDF</a>
+            <a href="{{ route('asistencia.reporte', request()->all()) }}" target="_blank" class="bg-green-600 text-white px-3 py-1 rounded">Generar PDF</a>
+            <a href="{{ route('asistencia.excel', request()->all()) }}" class="bg-green-700 text-white px-3 py-1 rounded" target="_blank">Exportar Excel</a>
         </form>
         <span id="hora-sistema" class="text-lg font-semibold text-gray-700"></span>
     </div>

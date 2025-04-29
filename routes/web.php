@@ -11,6 +11,9 @@ use App\Http\Controllers\PostPublicController;
 // Route::get('/posts/{post}', [PostPublicController::class, 'show'])->name('posts.show');
 
 Route::get('/asistencia', [AsistenciaAdministrativosController::class, 'index'])->name('asistencia.index');
+Route::get('/asistencia/reporte', [AsistenciaAdministrativosController::class, 'reporte'])->name('asistencia.reporte');
+Route::get('/asistencia/reporte/vista', [AsistenciaAdministrativosController::class, 'vistaReporte'])->name('asistencia.reporte.vista');
+Route::get('/asistencia/excel', [AsistenciaAdministrativosController::class, 'exportExcel'])->name('asistencia.excel');
 
 
 Route::view('dashboard', 'dashboard')
