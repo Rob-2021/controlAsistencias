@@ -44,8 +44,7 @@
                     if ($asistencia->HoraEntrada && $asistencia->HoraRegistroEntrada) {
                         $entrada  = \Carbon\Carbon::parse($asistencia->HoraEntrada);
                         $registro = \Carbon\Carbon::parse($asistencia->HoraRegistroEntrada);
-        
-                        // …dentro de tu @php en el foreach…
+
                         if ($entrada && $registro && $registro->greaterThan($entrada)) {
                             // Obtén los segundos de diferencia SIN aplicar valor absoluto
                             // (segundo parámetro false devuelve diferencia SIGNADA)
@@ -84,10 +83,8 @@
                                 }
                             }
                         }
-
                     }
                 @endphp
-        
                 <tr>
                     <td>{{ $asistencia->persona->Nombres ?? '' }} {{ $asistencia->persona->Paterno ?? '' }}</td>
                     <td>{{ $asistencia->CodigoTurno }}</td>

@@ -25,10 +25,16 @@ class AsistenciaAdministrativosController extends Controller
 
         if ($request->filled('busqueda')) {
             $busqueda = $request->input('busqueda');
-            $query->whereHas('persona', function ($q) use ($busqueda) {
-                $q->where('Nombres', 'like', "%$busqueda%")
-                    ->orWhere('Paterno', 'like', "%$busqueda%")
-                    ->orWhere('Materno', 'like', "%$busqueda%");
+            $palabras = preg_split('/\s+/', trim($busqueda)); // Divide por espacios
+        
+            $query->whereHas('persona', function ($q) use ($palabras) {
+                foreach ($palabras as $palabra) {
+                    $q->where(function ($subq) use ($palabra) {
+                        $subq->where('Nombres', 'like', "%$palabra%")
+                            ->orWhere('Paterno', 'like', "%$palabra%")
+                            ->orWhere('Materno', 'like', "%$palabra%");
+                    });
+                }
             });
         }
 
@@ -62,10 +68,15 @@ class AsistenciaAdministrativosController extends Controller
     
         if ($request->filled('busqueda')) {
             $busqueda = $request->input('busqueda');
-            $query->whereHas('persona', function ($q) use ($busqueda) {
-                $q->where('Nombres', 'like', "%$busqueda%")
-                    ->orWhere('Paterno', 'like', "%$busqueda%")
-                    ->orWhere('Materno', 'like', "%$busqueda%");
+            $palabras = preg_split('/\s+/', trim($busqueda));
+            $query->whereHas('persona', function ($q) use ($palabras) {
+                foreach ($palabras as $palabra) {
+                    $q->where(function ($subq) use ($palabra) {
+                        $subq->where('Nombres', 'like', "%$palabra%")
+                            ->orWhere('Paterno', 'like', "%$palabra%")
+                            ->orWhere('Materno', 'like', "%$palabra%");
+                    });
+                }
             });
         }
         if ($request->filled('dia')) {
@@ -92,10 +103,15 @@ public function vistaReporte(Request $request)
     // ... mismos filtros que en reporte ...
     if ($request->filled('busqueda')) {
         $busqueda = $request->input('busqueda');
-        $query->whereHas('persona', function ($q) use ($busqueda) {
-            $q->where('Nombres', 'like', "%$busqueda%")
-                ->orWhere('Paterno', 'like', "%$busqueda%")
-                ->orWhere('Materno', 'like', "%$busqueda%");
+        $palabras = preg_split('/\s+/', trim($busqueda));
+        $query->whereHas('persona', function ($q) use ($palabras) {
+            foreach ($palabras as $palabra) {
+                $q->where(function ($subq) use ($palabra) {
+                    $subq->where('Nombres', 'like', "%$palabra%")
+                        ->orWhere('Paterno', 'like', "%$palabra%")
+                        ->orWhere('Materno', 'like', "%$palabra%");
+                });
+            }
         });
     }
     if ($request->filled('dia')) {
