@@ -44,10 +44,10 @@ class AsistenciaAdministrativosController extends Controller
                 ->whereMonth('HoraEntrada', $mes);
         }
 
-        // Filtro por año
-        if ($request->filled('anio')) {
-            $query->whereYear('HoraEntrada', $request->input('anio'));
-        }
+        // // Filtro por año
+        // if ($request->filled('anio')) {
+        //     $query->whereYear('HoraEntrada', $request->input('anio'));
+        // }
 
         $asistencias = $query->paginate(10)->appends($request->all());
         return view('asistencia.index', compact('asistencias'));
