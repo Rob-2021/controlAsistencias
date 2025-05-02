@@ -58,9 +58,9 @@
                     <th scope="col" class="px-6 py-3">
                         EstadoSalida
                     </th>
-                    <th scope="col" class="px-6 py-3">
+                    {{-- <th scope="col" class="px-6 py-3">
                         Sanciones
-                    </th>
+                    </th> --}}
                     <th scope="col" class="px-6 py-3">
                         EstadoAsistencia
                     </th>
@@ -77,7 +77,7 @@
                             @if ($asistencia->persona)
                                 {{ $asistencia->persona->Nombres }}
                                 {{ $asistencia->persona->Paterno }}
-                                {{-- {{ $asistencia->persona->Materno }}  --}}
+                                {{ $asistencia->persona->Materno }}
                             @endif
                         </th>
                         <th class="px-6 py-4">
@@ -116,9 +116,9 @@
                         <th class="px-6 py-4">
                             {{$asistencia->EstadoSalida}}
                         </th>
-                        <th class="px-6 py-4">
+                        {{-- <th class="px-6 py-4">
                             {{$asistencia->Sanciones}}
-                        </th>
+                        </th> --}}
                         <th class="px-6 py-4">
                             {{$asistencia->EstadoAsistencia}}
                         </th>

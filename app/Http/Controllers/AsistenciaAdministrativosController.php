@@ -50,16 +50,8 @@ class AsistenciaAdministrativosController extends Controller
                 ->whereMonth('HoraEntrada', $mes);
         }
 
-        // // Filtro por año
-        // if ($request->filled('anio')) {
-        //     $query->whereYear('HoraEntrada', $request->input('anio'));
-        // }
-
         $asistencias = $query->paginate(10)->appends($request->all());
         return view('asistencia.index', compact('asistencias'));
-
-        // $asistencias = AsistenciaAdministrativo::orderBy('IdPersona','desc')->paginate(10);
-        // return view('asistencia.index', compact('asistencias'));
     }
 
     public function reporte(Request $request)

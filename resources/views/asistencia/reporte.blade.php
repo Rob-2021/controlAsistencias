@@ -26,7 +26,7 @@
                 <th>HoraRegistroSalida</th>
                 <th>EstadoEntrada</th>
                 <th>EstadoSalida</th>
-                <th>Sanciones</th>
+                {{-- <th>Sanciones</th> --}}
                 <th>EstadoAsistencia</th>
                 <th>Observaciones</th>
             </tr>
@@ -86,7 +86,7 @@
                     }
                 @endphp
                 <tr>
-                    <td>{{ $asistencia->persona->Nombres ?? '' }} {{ $asistencia->persona->Paterno ?? '' }}</td>
+                    <td>{{ $asistencia->persona->Nombres ?? '' }} {{ $asistencia->persona->Paterno ?? '' }} {{ $asistencia->persona->Materno ?? '' }}</td>
                     <td>{{ $asistencia->CodigoTurno }}</td>
                     <td>{{ $asistencia->HoraEntrada }}</td>
                     <td>{{ $asistencia->HoraRegistroEntrada }}</td>
@@ -95,7 +95,7 @@
                     <td>{{ $asistencia->HoraRegistroSalida }}</td>
                     <td>{{ $asistencia->EstadoEntrada }}</td>
                     <td>{{ $asistencia->EstadoSalida }}</td>
-                    <td>{{ $asistencia->Sanciones }}</td>
+                    {{-- <td>{{ $asistencia->Sanciones }}</td> --}}
                     <td>{{ $asistencia->EstadoAsistencia }}</td>
                     <td>{{ $asistencia->Observaciones }}</td>
                 </tr>

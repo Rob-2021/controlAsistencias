@@ -3,12 +3,8 @@
 use App\Http\Controllers\AsistenciaAdministrativosController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
-use App\Http\Controllers\PostPublicController;
 
-// Route::redirect('/', 'posts')->name('home');
-
-// Route::get('/posts', [PostPublicController::class, 'index'])->name('posts.index');
-// Route::get('/posts/{post}', [PostPublicController::class, 'show'])->name('posts.show');
+Route::redirect('/', '/asistencia');
 
 Route::get('/asistencia', [AsistenciaAdministrativosController::class, 'index'])->name('asistencia.index');
 Route::get('/asistencia/reporte', [AsistenciaAdministrativosController::class, 'reporte'])->name('asistencia.reporte');
