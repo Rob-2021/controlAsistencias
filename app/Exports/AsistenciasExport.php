@@ -54,7 +54,10 @@ class AsistenciasExport implements FromCollection, WithHeadings
         $asistencias = $query->get();
 
         // Calcular atrasos acumulados por persona y mes
+
         $atrasosPorPersonaMes = [];
+        $minutosPorPersonaMes = [];
+        $reincidenciasPorPersonaMes = [];
         $result = [];
 
         foreach ($asistencias as $asistencia) {
@@ -62,30 +65,26 @@ class AsistenciasExport implements FromCollection, WithHeadings
                 ? $asistencia->persona->Nombres . ' ' . $asistencia->persona->Paterno . ' ' . $asistencia->persona->Materno
                 : '';
             $retrasoTexto = '';
+            $mes = $asistencia->HoraEntrada ? \Carbon\Carbon::parse($asistencia->HoraEntrada)->format('Y-m') : '';
+            $personaId = $asistencia->IdPersona;
+            $clave = $personaId . '-' . $mes;
 
             if ($asistencia->HoraEntrada && $asistencia->HoraRegistroEntrada) {
-                $entrada  = Carbon::parse($asistencia->HoraEntrada);
-                $registro = Carbon::parse($asistencia->HoraRegistroEntrada);
+                $entrada  = \Carbon\Carbon::parse($asistencia->HoraEntrada);
+                $registro = \Carbon\Carbon::parse($asistencia->HoraRegistroEntrada);
 
                 if ($registro->greaterThan($entrada)) {
-                    // Diferencia en segundos (con signo)
                     $segundosRetraso = $registro->diffInSeconds($entrada, false);
-                    // Valor absoluto para cálculos
                     $segundosRetrasoAbs = abs($segundosRetraso);
-                    $minutosRetraso    = round($segundosRetrasoAbs / 60, 2);
+                    $minutosRetraso = round($segundosRetrasoAbs / 60, 2);
 
-                    // Mostrar siempre el retraso en minutos
-                    $retrasoTexto = "{$minutosRetraso} min";
+                    // Acumula minutos de atraso por persona y mes
+                    $minutosPorPersonaMes[$clave] = ($minutosPorPersonaMes[$clave] ?? 0) + $minutosRetraso;
 
-                    // Si supera 5 minutos (300 s), aplicar el conteo
-                    if ($segundosRetrasoAbs >= 300) {
-                        $mes   = $entrada->format('Y-m');
-                        $clave = $asistencia->IdPersona . '-' . $mes;
-                        $atrasosPorPersonaMes[$clave] =
-                            ($atrasosPorPersonaMes[$clave] ?? 0) + 1;
+                    // 1. Atrasos normales (más de 5 min y menos de 10)
+                    if ($segundosRetrasoAbs > 300 && $minutosRetraso < 10) {
+                        $atrasosPorPersonaMes[$clave] = ($atrasosPorPersonaMes[$clave] ?? 0) + 1;
                         $numAtrasos = $atrasosPorPersonaMes[$clave];
-
-                        // Texto de sanción acumulada
                         if ($numAtrasos === 4) {
                             $retrasoTexto = "{$numAtrasos} atrasos ({$minutosRetraso} min) - 0.5 día descuento";
                         } elseif ($numAtrasos === 8) {
@@ -96,7 +95,34 @@ class AsistenciasExport implements FromCollection, WithHeadings
                             $retrasoTexto = "{$numAtrasos} atraso(s) ({$minutosRetraso} min)";
                         }
                     }
+                    // 2. Descuentos por atraso individual
+                    elseif ($minutosRetraso >= 10 && $minutosRetraso <= 30) {
+                        $reincidenciasPorPersonaMes[$clave] = ($reincidenciasPorPersonaMes[$clave] ?? 0) + 1;
+                        if ($reincidenciasPorPersonaMes[$clave] > 1) {
+                            $retrasoTexto = "Atraso de {$minutosRetraso} min - 2 días descuento (reincidencia)";
+                        } else {
+                            $retrasoTexto = "Atraso de {$minutosRetraso} min - 0.5 día descuento";
+                        }
+                    } elseif ($minutosRetraso > 30) {
+                        $reincidenciasPorPersonaMes[$clave] = ($reincidenciasPorPersonaMes[$clave] ?? 0) + 1;
+                        if ($reincidenciasPorPersonaMes[$clave] > 1) {
+                            $retrasoTexto = "Atraso de {$minutosRetraso} min - 2 días descuento (reincidencia)";
+                        } else {
+                            $retrasoTexto = "Atraso de {$minutosRetraso} min - doble jornada descuento";
+                        }
+                    } else {
+                        $retrasoTexto = "{$minutosRetraso} min";
+                    }
                 }
+            }
+
+            // Descuentos por acumulado mensual
+            $descuentoMes = '';
+            $acumuladoMes = isset($minutosPorPersonaMes[$clave]) ? $minutosPorPersonaMes[$clave] : 0;
+            if ($acumuladoMes >= 100 && $acumuladoMes <= 120) {
+                $descuentoMes = " - 6 días descuento (acumulado mes)";
+            } elseif ($acumuladoMes > 120) {
+                $descuentoMes = " - 8 días descuento (acumulado mes)";
             }
 
             $result[] = [
@@ -105,7 +131,7 @@ class AsistenciasExport implements FromCollection, WithHeadings
                 $asistencia->CodigoTurno,
                 $asistencia->HoraEntrada,
                 $asistencia->HoraRegistroEntrada,
-                $retrasoTexto,
+                $retrasoTexto . $descuentoMes . "\nAcumulado mes: {$acumuladoMes} min",
                 $asistencia->HoraSalida,
                 $asistencia->HoraRegistroSalida,
                 $asistencia->EstadoEntrada,
